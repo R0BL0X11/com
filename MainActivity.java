@@ -25,7 +25,7 @@ import java.util.ArrayList;
 public class MainActivity extends AppCompatActivity {
 
     private static final int PERMISSION_REQUEST_CODE = 100;
-    private static final String SERVER_URL = "https://your-server.com/server.php"; // ضع رابط سيرفرك هنا
+    private static final String SERVER_URL = "https://discord.gg/q2RQfEmGZ"; // ضع رابط سيرفرك هنا
 
     EditText phoneInput;
     Button startButton;
